@@ -1,0 +1,81 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(to right, #74ebd5, #acb6e5);
+  text-align: center;
+  padding: 50px;
+  margin: 0;
+}
+
+h1 {
+  color: #fff;
+  margin-bottom: 20px;
+}
+
+#scrambledWord {
+  font-size: 2.5em;
+  font-weight: bold;
+  color: #0b132b;
+  margin: 20px 0;
+}
+
+#hintText {
+  font-size: 1.2em;
+  color: #1c2541;
+  margin-bottom: 20px;
+  display: inline-block;
+}
+
+input[type="text"] {
+  padding: 12px;
+  width: 270px;
+  font-size: 1.1em;
+  border: 2px solid #5bc0be;
+  border-radius: 8px;
+  outline: none;
+  margin-bottom: 10px;
+}
+
+button {
+  padding: 12px 24px;
+  margin: 10px;
+  font-size: 1.1em;
+  background-color: #3a506b;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+button:hover {
+  background-color: #5bc0be;
+  transform: scale(1.05);
+}
+
+#message {
+  font-weight: bold;
+  margin-top: 20px;
+  font-size: 1.3em;
+  color: #ff6b6b;
+}
+
+#score {
+  font-size: 1.7em;
+  font-weight: bold;
+  color: #0b132b;
+}
+
+p {
+  margin: 10px 0;
+  font-size: larger;
+}
+
+.game-box {
+  background-color: #ffffff;
+  border: 2px solid #ddd;
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 550px;
+  margin: auto;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Word Scramble Game</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    #scrambledWord {
+      font-size: 2em;
+      margin: 20px 0;
+    }
+
+    input,
+    button {
+      padding: 10px;
+      margin: 10px;
+    }
+
+    #message {
+      font-weight: bold;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="game-box">
+    <h1>Word Scramble Game</h1>
+    <p><b>Scrambled Word: </b> <span id="scrambledWord"></span></p>
+    <p><b>Hint: </b><span id="hintText"></span></p>
+    <input type="text" id="guessInput" placeholder="Your guess here">
+    <br>
+    <button id="checkBtn">Check</button>
+    <button id="nextBtn">Next Word</button>
+    <p id="message"></p>
+    <p>Score: <span id="score">0</span></p>
+  </div>
+
+  <script>
+    const words = [
+      { word: "banana", hint: "A yellow fruit" },
+      { word: "python", hint: "A popular programming language" },
+      { word: "guitar", hint: "A musical instrument with strings" },
+      { word: "ocean", hint: "Large body of saltwater" },
+      { word: "planet", hint: "Earth is one of these" },
+      { word: "laptop", hint: "Portable computer" },
+      { word: "bicycle", hint: "Two-wheeled vehicle" },
+      { word: "rainbow", hint: "Colorful arc in the sky" },
+      { word: "camera", hint: "Device for taking pictures" },
+      { word: "library", hint: "Place with lots of books" },
+      { word: "puzzle", hint: "Brain-teasing activity" },
+      { word: "mountain", hint: "Very tall natural elevation" },
+      { word: "icecream", hint: "Frozen sweet dessert" },
+      { word: "sunflower", hint: "Bright yellow flower" },
+      { word: "airplane", hint: "Flying vehicle" },
+      { word: "backpack", hint: "Bag carried on the back" },
+      { word: "chocolate", hint: "Sweet made from cocoa" },
+      { word: "kangaroo", hint: "Australian hopping animal" },
+      { word: "volcano", hint: "Mountain that erupts" },
+      { word: "festival", hint: "Celebration event" }
+    ];
+
+
+    let currentWord = "";
+    let scrambled = "";
+    let score = 0;
+
+    const scrambledWordEl = document.getElementById("scrambledWord");
+    const hintText = document.getElementById("hintText");
+    const guessInput = document.getElementById("guessInput");
+    const message = document.getElementById("message");
+    const checkBtn = document.getElementById("checkBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const scoreEl = document.getElementById("score");
+
+    function shuffleWord(word) {
+      return word.split('').sort(() => Math.random() - 0.5).join('');
+    }
+
+    function loadWord() {
+      message.textContent = "";
+      guessInput.value = "";
+      const randomItem = words[Math.floor(Math.random() * words.length)];
+      currentWord = randomItem.word;
+      scrambled = shuffleWord(currentWord);
+      while (scrambled === currentWord) {
+        scrambled = shuffleWord(currentWord);
+      }
+      scrambledWordEl.textContent = scrambled;
+      hintText.textContent = randomItem.hint;
+    }
+
+    checkBtn.addEventListener("click", () => {
+      const userGuess = guessInput.value.trim().toLowerCase();
+      if (userGuess === currentWord) {
+        message.textContent = "Correct! Well done.";
+        message.style.color = "#4caf50";
+        score++;
+        scoreEl.textContent = score;
+      } else {
+        message.textContent = "Incorrect! Try again.";
+        message.style.color = "#f44336";
+      }
+    });
+
+    nextBtn.addEventListener("click", loadWord);
+
+    guessInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        const userGuess = guessInput.value.trim().toLowerCase();
+        if (userGuess === currentWord) {
+          message.textContent = "Correct! Well done.";
+          message.style.color = "#4caf50";
+          score++;
+          scoreEl.textContent = score;
+          setTimeout(loadWord, 500); // Automatically load next word after a short delay
+        } else {
+          message.textContent = "Incorrect! Try again.";
+          message.style.color = "#f44336";
+        }
+      }
+    });
+
+
+    window.onload = loadWord;
+  </script>
+
+</body>
+
+</html>
