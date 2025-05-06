@@ -24,15 +24,33 @@ body {
     align-items: flex-end;
     padding: 60px 40px;
     border-radius: 10px;
+    max-width: 95%;
+    margin: 20px auto;
+    flex-wrap: wrap;
+}
+
+.hangman-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    min-width: 270px;
 }
 
 .hangman-box img {
-    max-width: 270px;
+    max-width: 100%;
+    height: auto;
 }
 
 .hangman-box h1 {
     font-size: 1.45rem;
     margin-top: 20px;
+    text-align: center;
+}
+
+.game-box {
+    flex: 1;
+    min-width: 300px;
 }
 
 .word-display {
@@ -41,6 +59,8 @@ body {
     list-style: none;
     align-items: center;
     justify-content: center;
+    flex-wrap: wrap;
+    margin: 30px 0;
 }
 
 .word-display .letter {
@@ -67,6 +87,7 @@ body {
 
 .game-box h4 b {
     font-weight: 600;
+    word-wrap: break-word;
 }
 
 .game-box .guesses-text b {
@@ -96,6 +117,7 @@ body {
 .keyboard button {
     padding: 7px;
     width: calc(100% / 9 - 5px);
+    min-width: 35px;
 }
 
 .keyboard button[disabled] {
@@ -129,7 +151,6 @@ body {
     pointer-events: auto;
 }
 
-
 .game-modal .content {
     background: #fff;
     max-width: 420px;
@@ -137,6 +158,7 @@ body {
     text-align: center;
     border-radius: 10px;
     padding: 30px;
+    margin: 20px;
 }
 
 .game-modal img {
@@ -152,6 +174,7 @@ body {
     font-size: 1.15rem;
     margin: 15px 0 30px;
     font-weight: 500;
+    word-wrap: break-word;
 }
 
 .game-modal p b {
@@ -168,13 +191,33 @@ body {
         flex-direction: column;
         padding: 30px 15px;
         align-items: center;
+        gap: 30px;
+    }
+
+    .hangman-box {
+        min-width: auto;
     }
 
     .hangman-box img {
         max-width: 200px;
     }
 
-    .hangman-box h1 {
-        display: none;
+    .game-box {
+        min-width: 100%;
+    }
+
+    .keyboard button {
+        width: calc(100% / 8 - 5px);
+    }
+}
+
+@media (max-width: 500px) {
+    .keyboard button {
+        width: calc(100% / 7 - 5px);
+    }
+    
+    .word-display .letter {
+        width: 25px;
+        font-size: 1.8rem;
     }
 }

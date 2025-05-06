@@ -470,30 +470,52 @@ class MiniGamesHub {
     }
 
     // Feedback Management
-    saveFeedback(feedback) {
-        const feedbacks = JSON.parse(localStorage.getItem('feedbacks') || '[]');
-        feedbacks.push({
-            ...feedback,
-            date: new Date().toISOString()
-        });
-        localStorage.setItem('feedbacks', JSON.stringify(feedbacks));
-        this.displayFeedbacks();
+    async saveFeedback(feedback) {
+        try {
+            const response = await fetch('http://localhost:5000/api/feedbacks', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(feedback)
+            });
+            
+            if (!response.ok) {
+                throw new Error('Failed to save feedback');
+            }
+            
+            await this.displayFeedbacks();
+        } catch (error) {
+            console.error('Error saving feedback:', error);
+            alert('Failed to save feedback. Please try again later.');
+        }
     }
 
-    displayFeedbacks() {
-        const feedbacks = JSON.parse(localStorage.getItem('feedbacks') || '[]');
-        const feedbackListElement = this.feedbackList.querySelector('ul');
-        feedbackListElement.innerHTML = '';
+    async displayFeedbacks() {
+        try {
+            const response = await fetch('http://localhost:5000/api/feedbacks');
+            if (!response.ok) {
+                throw new Error('Failed to fetch feedbacks');
+            }
+            
+            const feedbacks = await response.json();
+            const feedbackListElement = this.feedbackList.querySelector('ul');
+            feedbackListElement.innerHTML = '';
 
-        feedbacks.slice(-5).reverse().forEach(feedback => {
-            const li = document.createElement('li');
-            li.innerHTML = `
-                <strong>${feedback.username}</strong> - ${feedback.rating} stars<br>
-                ${feedback.review}<br>
-                <small>${new Date(feedback.date).toLocaleDateString()}</small>
-            `;
-            feedbackListElement.appendChild(li);
-        });
+            feedbacks.forEach(feedback => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <strong>${feedback.username}</strong> - ${feedback.rating} stars<br>
+                    ${feedback.review}<br>
+                    <small>${new Date(feedback.date).toLocaleDateString()}</small>
+                `;
+                feedbackListElement.appendChild(li);
+            });
+        } catch (error) {
+            console.error('Error fetching feedbacks:', error);
+            const feedbackListElement = this.feedbackList.querySelector('ul');
+            feedbackListElement.innerHTML = '<li>Failed to load feedbacks. Please try again later.</li>';
+        }
     }
 
     handleFeedbackSubmit(e) {

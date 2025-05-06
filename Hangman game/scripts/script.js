@@ -12,7 +12,7 @@ const resetGame = () => {
     // Resetting all game variables and UI elements
     correctLetters = [];
     wrongGuessCount = 0;
-    hangmanImage.src = `images/hangman-${wrongGuessCount}.svg`;
+    hangmanImage.src = `../media/hangman-${wrongGuessCount}.svg`;
     guessesText.innerText = `${wrongGuessCount} / ${maxGuesses}`;
     keyboardDiv.querySelectorAll("button").forEach(btn => btn.disabled = false);
     wordDisplay.innerHTML = currentWord.split("").map(() => `<li class="letter"></li>`).join("");
@@ -33,7 +33,7 @@ const getRandomWord = () => {
 const gameOver = (isVictory) => {
     setTimeout(() => {
         const modalText = isVictory ? "You found the word:" : "The correct word was:";
-        gameModal.querySelector("img").src = `images/${isVictory ? 'victory' : 'lost'}.gif`;
+        gameModal.querySelector("img").src = `../media/${isVictory ? 'victory' : 'lost'}.gif`;
         gameModal.querySelector("h4").innerText = isVictory ? "Congrats!" : "Game Over!";
         gameModal.querySelector("p").innerHTML = `${modalText} <b>${currentWord}</b>`;
 
@@ -55,7 +55,7 @@ const initGame = (button, clickedLetter) => {
     } else {
         // If clicked letter doesn't exist, update the wrong guess count and hangman image
         wrongGuessCount++;
-        hangmanImage.src = `images/hangman-${wrongGuessCount}.svg`;
+        hangmanImage.src = `../media/hangman-${wrongGuessCount}.svg`;
     }
 
     button.disabled = true; // Disable the button after clicking
@@ -64,8 +64,6 @@ const initGame = (button, clickedLetter) => {
 
     if (wrongGuessCount === maxGuesses) return gameOver(false);
     if (correctLetters.length === currentWord.length) return gameOver(true);
-
-
 }
 
 // Creating keyboard buttons and adding event listeners
@@ -76,7 +74,6 @@ for (let i = 97; i <= 122; i++) {
     button.addEventListener("click", e => initGame(e.target, String.fromCharCode(i))
     );
 }
-
 
 getRandomWord();
 playAgainBtn.addEventListener("click", getRandomWord);

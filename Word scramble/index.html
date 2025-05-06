@@ -27,6 +27,39 @@
       font-weight: bold;
       margin-top: 20px;
     }
+
+    .hint-container {
+      margin: 15px 0;
+    }
+
+    #hintText {
+      display: none;
+      color: #666;
+      font-style: italic;
+      margin-top: 5px;
+    }
+
+    #hintText.show {
+      display: block;
+    }
+
+    #showHintBtn {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    #showHintBtn:hover {
+      background-color: #45a049;
+    }
+
+    #showHintBtn.used {
+      background-color: #999;
+      cursor: not-allowed;
+    }
   </style>
 </head>
 
@@ -34,7 +67,10 @@
   <div class="game-box">
     <h1>Word Scramble Game</h1>
     <p><b>Scrambled Word: </b> <span id="scrambledWord"></span></p>
-    <p><b>Hint: </b><span id="hintText"></span></p>
+    <div class="hint-container">
+      <button id="showHintBtn">Show Hint</button>
+      <p id="hintText"></p>
+    </div>
     <input type="text" id="guessInput" placeholder="Your guess here">
     <br>
     <button id="checkBtn">Check</button>
@@ -67,10 +103,10 @@
       { word: "festival", hint: "Celebration event" }
     ];
 
-
     let currentWord = "";
     let scrambled = "";
     let score = 0;
+    let hintUsed = false;
 
     const scrambledWordEl = document.getElementById("scrambledWord");
     const hintText = document.getElementById("hintText");
@@ -79,6 +115,7 @@
     const checkBtn = document.getElementById("checkBtn");
     const nextBtn = document.getElementById("nextBtn");
     const scoreEl = document.getElementById("score");
+    const showHintBtn = document.getElementById("showHintBtn");
 
     function shuffleWord(word) {
       return word.split('').sort(() => Math.random() - 0.5).join('');
@@ -87,6 +124,12 @@
     function loadWord() {
       message.textContent = "";
       guessInput.value = "";
+      hintText.textContent = "";
+      hintText.classList.remove("show");
+      showHintBtn.classList.remove("used");
+      showHintBtn.textContent = "Show Hint";
+      hintUsed = false;
+      
       const randomItem = words[Math.floor(Math.random() * words.length)];
       currentWord = randomItem.word;
       scrambled = shuffleWord(currentWord);
@@ -96,6 +139,15 @@
       scrambledWordEl.textContent = scrambled;
       hintText.textContent = randomItem.hint;
     }
+
+    showHintBtn.addEventListener("click", () => {
+      if (!hintUsed) {
+        hintText.classList.add("show");
+        showHintBtn.classList.add("used");
+        showHintBtn.textContent = "Hint Used";
+        hintUsed = true;
+      }
+    });
 
     checkBtn.addEventListener("click", () => {
       const userGuess = guessInput.value.trim().toLowerCase();
@@ -127,7 +179,6 @@
         }
       }
     });
-
 
     window.onload = loadWord;
   </script>
