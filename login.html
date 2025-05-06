@@ -15,33 +15,40 @@
     <div class="auth-container">
         <div class="auth-box">
             <div class="tabs">
-                <button class="tab-btn active" data-tab="login">Login</button>
-                <button class="tab-btn" data-tab="signup">Sign Up</button>
+                <button class="tab-btn active" data-tab="login">
+                    <i class="fa-solid fa-right-to-bracket"></i> Login
+                </button>
+                <button class="tab-btn" data-tab="signup">
+                    <i class="fa-solid fa-user-plus"></i> Sign Up
+                </button>
             </div>
             
             <!-- Login Form -->
             <form id="loginForm" class="auth-form active">
-                <h2>Welcome Back!</h2>
+                <h2>Welcome Back! <i class="fa-solid fa-hand-wave"></i></h2>
                 <div class="form-group">
-                    <label for="loginEmail">Email</label>
-                    <input type="email" id="loginEmail" required>
+                    <label for="loginEmail"><i class="fa-solid fa-envelope"></i> Email</label>
+                    <input type="email" id="loginEmail" placeholder="Enter your email" required>
                 </div>
                 <div class="form-group">
-                    <label for="loginPassword">Password</label>
+                    <label for="loginPassword"><i class="fa-solid fa-lock"></i> Password</label>
                     <div class="password-input">
-                        <input type="password" id="loginPassword" required>
+                        <input type="password" id="loginPassword" placeholder="Enter your password" required>
                         <i class="fa-solid fa-eye toggle-password"></i>
                     </div>
                 </div>
                 <div class="form-group remember-forgot">
                     <label>
-                        <input type="checkbox" id="rememberMe"> Remember me
+                        <input type="checkbox" id="rememberMe">
+                        <span>Remember me</span>
                     </label>
                     <a href="#" class="forgot-password">Forgot Password?</a>
                 </div>
-                <button type="submit" class="auth-btn">Login</button>
+                <button type="submit" class="auth-btn">
+                    <i class="fa-solid fa-right-to-bracket"></i> Login
+                </button>
                 <div class="social-login">
-                    <p>Or login with</p>
+                    <p>Or continue with</p>
                     <div class="social-buttons">
                         <button type="button" class="social-btn google">
                             <i class="fa-brands fa-google"></i> Google
@@ -55,36 +62,38 @@
 
             <!-- Signup Form -->
             <form id="signupForm" class="auth-form">
-                <h2>Create Account</h2>
+                <h2>Create Account <i class="fa-solid fa-user-plus"></i></h2>
                 <div class="form-group">
-                    <label for="signupName">Full Name</label>
-                    <input type="text" id="signupName" required>
+                    <label for="signupName"><i class="fa-solid fa-user"></i> Full Name</label>
+                    <input type="text" id="signupName" placeholder="Enter your full name" required>
                 </div>
                 <div class="form-group">
-                    <label for="signupEmail">Email</label>
-                    <input type="email" id="signupEmail" required>
+                    <label for="signupEmail"><i class="fa-solid fa-envelope"></i> Email</label>
+                    <input type="email" id="signupEmail" placeholder="Enter your email" required>
                 </div>
                 <div class="form-group">
-                    <label for="signupPassword">Password</label>
+                    <label for="signupPassword"><i class="fa-solid fa-lock"></i> Password</label>
                     <div class="password-input">
-                        <input type="password" id="signupPassword" required>
+                        <input type="password" id="signupPassword" placeholder="Create a password" required>
                         <i class="fa-solid fa-eye toggle-password"></i>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="confirmPassword">Confirm Password</label>
+                    <label for="confirmPassword"><i class="fa-solid fa-lock"></i> Confirm Password</label>
                     <div class="password-input">
-                        <input type="password" id="confirmPassword" required>
+                        <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
                         <i class="fa-solid fa-eye toggle-password"></i>
                     </div>
                 </div>
                 <div class="form-group terms">
                     <label>
                         <input type="checkbox" id="agreeTerms" required>
-                        I agree to the <a href="#">Terms & Conditions</a>
+                        <span>I agree to the <a href="#">Terms & Conditions</a></span>
                     </label>
                 </div>
-                <button type="submit" class="auth-btn">Create Account</button>
+                <button type="submit" class="auth-btn">
+                    <i class="fa-solid fa-user-plus"></i> Create Account
+                </button>
             </form>
         </div>
     </div>
