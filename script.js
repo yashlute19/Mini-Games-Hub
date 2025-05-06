@@ -261,7 +261,7 @@ class MiniGamesHub {
         const openGame = (gameId) => {
             const game = this.games.find(g => g.id === gameId);
             if (game) {
-                window.location.href = game.url;
+                window.location.href = game.path;
             }
         };
 
@@ -279,7 +279,7 @@ class MiniGamesHub {
                         g.name.toLowerCase() === query.toLowerCase()
                     );
                     if (game) {
-                        openGame(game.id);
+                        window.location.href = game.path;
                     }
                 }
             }
@@ -295,7 +295,7 @@ class MiniGamesHub {
                         g.name.toLowerCase() === query.toLowerCase()
                     );
                     if (game) {
-                        openGame(game.id);
+                        window.location.href = game.path;
                     }
                 }
             } else {
@@ -321,45 +321,152 @@ class MiniGamesHub {
 
     // Voice Search
     initializeVoiceSearch() {
-        if ('webkitSpeechRecognition' in window) {
-            const recognition = new webkitSpeechRecognition();
-            recognition.continuous = false;
-            recognition.interimResults = false;
-            let isListening = false;
+        // Check for browser compatibility
+        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+            this.voiceBtn.style.display = 'none';
+            console.warn('Voice recognition is not supported in this browser. Please use Chrome for best results.');
+            return;
+        }
 
-            this.voiceBtn.addEventListener('click', () => {
+        // Create speech recognition instance
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        
+        // Configure recognition settings
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.lang = 'en-US'; // Set language to English
+        let isListening = false;
+
+        // Add visual feedback element
+        const feedbackElement = document.createElement('div');
+        feedbackElement.style.cssText = `
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            z-index: 1000;
+            display: none;
+        `;
+        document.body.appendChild(feedbackElement);
+
+        const showFeedback = (message, duration = 3000) => {
+            feedbackElement.textContent = message;
+            feedbackElement.style.display = 'block';
+            setTimeout(() => {
+                feedbackElement.style.display = 'none';
+            }, duration);
+        };
+
+        this.voiceBtn.addEventListener('click', async () => {
+            try {
                 if (!isListening) {
+                    // Request microphone permission explicitly
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    stream.getTracks().forEach(track => track.stop()); // Stop the stream after getting permission
+                    
                     recognition.start();
-                    this.voiceBtn.textContent = '❌';
+                    this.voiceBtn.innerHTML = '<i class="fa-solid fa-microphone-slash"></i>';
                     isListening = true;
+                    showFeedback('Listening... Speak now');
                 } else {
                     recognition.stop();
-                    this.voiceBtn.textContent = '🎤';
+                    this.voiceBtn.innerHTML = '<i class="fa-solid fa-microphone"></i>';
                     isListening = false;
+                    showFeedback('Voice recognition stopped');
                 }
-            });
+            } catch (error) {
+                console.error('Microphone permission error:', error);
+                showFeedback('Please allow microphone access to use voice search');
+                this.voiceBtn.innerHTML = '<i class="fa-solid fa-microphone"></i>';
+                isListening = false;
+            }
+        });
 
-            recognition.onresult = (event) => {
-                const query = event.results[0][0].transcript;
-                this.gameSearch.value = query;
+        recognition.onstart = () => {
+            console.log('Voice recognition started');
+            showFeedback('Listening... Speak now');
+        };
+
+        recognition.onresult = (event) => {
+            const query = event.results[0][0].transcript;
+            console.log('Voice recognition result:', query);
+            
+            this.gameSearch.value = query;
+            
+            // Find the game that matches the recognized speech
+            const recognizedGame = this.games.find(game => 
+                game.name.toLowerCase() === query.toLowerCase().trim()
+            );
+            
+            if (recognizedGame) {
+                showFeedback(`Opening ${recognizedGame.name}...`);
+                // Add a small delay to show the feedback message
+                setTimeout(() => {
+                    window.location.href = recognizedGame.path;
+                }, 1000);
+            } else {
+                // If no exact match, show search results
                 this.handleSearch(query);
-                this.voiceBtn.textContent = '🎤';
-                isListening = false;
-            };
+                showFeedback(`No exact match found for "${query}". Showing search results.`);
+            }
+            
+            this.voiceBtn.innerHTML = '<i class="fa-solid fa-microphone"></i>';
+            isListening = false;
+        };
 
-            recognition.onend = () => {
-                this.voiceBtn.textContent = '🎤';
-                isListening = false;
-            };
+        recognition.onend = () => {
+            console.log('Voice recognition ended');
+            this.voiceBtn.innerHTML = '<i class="fa-solid fa-microphone"></i>';
+            isListening = false;
+        };
 
-            recognition.onerror = () => {
-                alert('Voice recognition failed or was cancelled.');
-                this.voiceBtn.textContent = '🎤';
-                isListening = false;
-            };
-        } else {
-            this.voiceBtn.style.display = 'none';
-        }
+        recognition.onerror = (event) => {
+            console.error('Voice recognition error:', event.error);
+            
+            let errorMessage = 'Voice recognition failed. ';
+            switch (event.error) {
+                case 'no-speech':
+                    errorMessage += 'No speech was detected. Please try again.';
+                    break;
+                case 'aborted':
+                    errorMessage += 'Voice recognition was aborted.';
+                    break;
+                case 'audio-capture':
+                    errorMessage += 'No microphone was found. Please ensure your microphone is connected.';
+                    break;
+                case 'network':
+                    errorMessage += 'Network error occurred. Please check your internet connection.';
+                    break;
+                case 'not-allowed':
+                    errorMessage += 'Microphone access was denied. Please allow microphone access.';
+                    break;
+                case 'service-not-allowed':
+                    errorMessage += 'Voice recognition service is not allowed.';
+                    break;
+                default:
+                    errorMessage += 'An unknown error occurred. Please try again.';
+            }
+            
+            showFeedback(errorMessage, 5000);
+            this.voiceBtn.innerHTML = '<i class="fa-solid fa-microphone"></i>';
+            isListening = false;
+        };
+
+        // Add a tooltip to the voice button
+        this.voiceBtn.title = 'Click to start voice search';
+        
+        // Add keyboard shortcut (Alt+V) for voice search
+        document.addEventListener('keydown', (e) => {
+            if (e.altKey && e.key === 'v') {
+                e.preventDefault();
+                this.voiceBtn.click();
+            }
+        });
     }
 
     // Feedback Management
@@ -990,12 +1097,12 @@ class MiniGamesHub {
 
 // Game data
 MiniGamesHub.prototype.games = [
-    { name: 'Hangman Game', path: 'Hangman game/index.html' },
-    { name: 'Memory Card Game', path: 'memory card/index.html' },
-    { name: 'Rock Paper Scissors', path: 'Rock paper scissor/index.html' },
-    { name: 'Snake Game', path: 'snake game/index.html' },
-    { name: 'Tic Tac Toe', path: 'Tic Tac Toe/index.html' },
-    { name: 'Word Scramble', path: 'Word scramble/index.html' }
+    { id: 'hangman', name: 'Hangman Game', path: 'Hangman game/index.html' },
+    { id: 'memory', name: 'Memory Card Game', path: 'memory card/index.html' },
+    { id: 'rps', name: 'Rock Paper Scissors', path: 'Rock paper scissor/index.html' },
+    { id: 'snake', name: 'Snake Game', path: 'snake game/index.html' },
+    { id: 'tictactoe', name: 'Tic Tac Toe', path: 'Tic Tac Toe/index.html' },
+    { id: 'wordscramble', name: 'Word Scramble', path: 'Word scramble/index.html' }
 ];
 
 // Initialize the application when the DOM is loaded

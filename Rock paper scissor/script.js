@@ -4,6 +4,12 @@ const gameContainer = document.querySelector(".container"),
     result = document.querySelector(".result"),
     optionImages = document.querySelectorAll(".option_image");
 
+const choices = [
+    { name: 'rock', image: '../media/rock.png' },
+    { name: 'paper', image: '../media/paper.png' },
+    { name: 'scissors', image: '../media/scissors.png' }
+];
+
 // Loop through each option image element
 optionImages.forEach((image, index) => {
     image.addEventListener("click", (e) => {
