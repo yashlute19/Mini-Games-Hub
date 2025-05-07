@@ -13,9 +13,9 @@ const app = express();
 
 // CORS Configuration
 const corsOptions = {
-    origin: '*', // Allow all origins in development
+    origin: true, // Allow all origins in development
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
     credentials: true
 };
 
@@ -23,8 +23,15 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
+// Add request logging middleware
+app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+    next();
+});
+
 // Health Check Endpoint
 app.get('/api/health', (req, res) => {
+    console.log('Health check requested');
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 

@@ -901,17 +901,40 @@ class MiniGamesHub {
         
         gameContainers.forEach(container => {
             const video = container.querySelector('.game-preview');
+            if (!video) return;
+
+            // Set video quality attributes
+            video.setAttribute('playsinline', '');
+            video.setAttribute('preload', 'auto');
             
+            // Ensure video is loaded before showing
+            video.addEventListener('loadeddata', () => {
+                console.log('Video loaded successfully');
+            });
+
+            // Handle hover events
             container.addEventListener('mouseenter', () => {
-                video.play().catch(error => {
-                    console.log('Video autoplay failed:', error);
-                });
+                // Reset video to beginning
+                video.currentTime = 0;
+                
+                // Play video with high quality
+                const playPromise = video.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.log('Video autoplay failed:', error);
+                    });
+                }
             });
             
             container.addEventListener('mouseleave', () => {
+                // Pause video
                 video.pause();
+                // Reset to beginning
                 video.currentTime = 0;
             });
+
+            // Preload video
+            video.load();
         });
     }
 

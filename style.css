@@ -325,7 +325,7 @@ body.dark-mode #themeOptions li:hover {
     justify-content: center;
     align-items: center;
     gap: 30px;
-    padding: 20px;
+    padding: 220px 20px 20px;
     max-width: 1200px;
     margin: 0 auto;
 }
@@ -338,22 +338,46 @@ body.dark-mode #themeOptions li:hover {
 
 .game-preview {
     position: absolute;
-    top: 0;
+    top: -200px;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 180px;
     object-fit: cover;
     opacity: 0;
-    transition: all 0.3s ease;
+    transition: opacity 0.3s ease;
     border-radius: 10px;
     transform: translateY(10px);
     z-index: 2;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    pointer-events: none;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform-style: preserve-3d;
+    will-change: opacity;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    filter: none;
 }
 
 .game-card-container:hover .game-preview {
     opacity: 1;
-    transform: translateY(-5px);
+    transform: translateY(0);
+}
+
+.game-preview video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    perspective: 1000;
+    -webkit-perspective: 1000;
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+    will-change: transform;
+    filter: none;
+    -webkit-filter: none;
 }
 
 .game-card {
@@ -375,6 +399,7 @@ body.dark-mode #themeOptions li:hover {
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
     border: 2px solid transparent;
+    cursor: pointer;
 }
 
 .game-card::before {
@@ -447,13 +472,12 @@ body[data-theme="dark"] .game-preview {
 /* Responsive adjustments for game cards */
 @media (max-width: 768px) {
     .game-preview {
-        transform: scale(1.05);
-        filter: brightness(1.1) contrast(1.1);
+        top: -180px;
+        height: 160px;
     }
     
-    .game-card-container:hover .game-preview {
-        transform: scale(1);
-        filter: brightness(1.2) contrast(1.1);
+    .games-grid {
+        padding-top: 200px;
     }
     
     .game-card {
@@ -464,13 +488,12 @@ body[data-theme="dark"] .game-preview {
 
 @media (max-width: 480px) {
     .game-preview {
-        transform: scale(1.05);
-        filter: brightness(1.1) contrast(1.1);
+        top: -160px;
+        height: 140px;
     }
     
-    .game-card-container:hover .game-preview {
-        transform: scale(1);
-        filter: brightness(1.2) contrast(1.1);
+    .games-grid {
+        padding-top: 180px;
     }
     
     .game-card {
