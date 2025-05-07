@@ -29,28 +29,60 @@ app.get('/api/health', (req, res) => {
 });
 
 // MongoDB Connection
-const MONGODB_URI = 'mongodb://127.0.0.1:27017/mini-games-hub';
+const MONGODB_URI = 'mongodb://localhost:27017/mini-games-hub';
 console.log('Attempting to connect to MongoDB at:', MONGODB_URI);
 
+// Check if MongoDB is running
+const checkMongoDBService = async () => {
+    try {
+        const { exec } = require('child_process');
+        return new Promise((resolve) => {
+            exec('sc query MongoDB', (error, stdout, stderr) => {
+                if (error) {
+                    console.error('Error checking MongoDB service:', error);
+                    resolve(false);
+                }
+                const isRunning = stdout.includes('RUNNING');
+                console.log('MongoDB service status:', isRunning ? 'Running' : 'Not running');
+                resolve(isRunning);
+            });
+        });
+    } catch (error) {
+        console.error('Error checking MongoDB service:', error);
+        return false;
+    }
+};
+
 const connectWithRetry = async () => {
+    // First check if MongoDB service is running
+    const isMongoRunning = await checkMongoDBService();
+    if (!isMongoRunning) {
+        console.error('MongoDB service is not running. Please start MongoDB service first.');
+        return false;
+    }
+
     let retries = 5;
     while (retries > 0) {
         try {
+            console.log(`Attempting to connect to MongoDB (Attempt ${6 - retries}/5)...`);
             await mongoose.connect(MONGODB_URI, {
                 useNewUrlParser: true,
                 useUnifiedTopology: true
             });
             console.log('Connected to MongoDB successfully!');
+            console.log('MongoDB connection state:', mongoose.connection.readyState);
             return true;
         } catch (error) {
             retries--;
             console.error(`MongoDB connection attempt ${6 - retries} failed:`, error.message);
+            console.error('Full error:', error);
             if (retries === 0) {
                 console.error('Max retries reached. Could not connect to MongoDB.');
                 console.error('Please make sure MongoDB is installed and running locally.');
                 console.error('You can download MongoDB from: https://www.mongodb.com/try/download/community');
                 return false;
             }
+            console.log(`Retrying in 2 seconds... (${retries} attempts remaining)`);
             await new Promise(resolve => setTimeout(resolve, 2000));
         }
     }
