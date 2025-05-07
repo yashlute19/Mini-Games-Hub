@@ -476,45 +476,57 @@ class MiniGamesHub {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 },
                 body: JSON.stringify(feedback)
             });
             
             if (!response.ok) {
-                throw new Error('Failed to save feedback');
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
             
+            const result = await response.json();
+            console.log('Feedback saved:', result);
             await this.displayFeedbacks();
         } catch (error) {
             console.error('Error saving feedback:', error);
-            alert('Failed to save feedback. Please try again later.');
+            alert('Failed to save feedback. Please make sure the server is running.');
         }
     }
 
     async displayFeedbacks() {
         try {
-            const response = await fetch('http://localhost:5000/api/feedbacks');
+            const response = await fetch('http://localhost:5000/api/feedbacks', {
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+            
             if (!response.ok) {
-                throw new Error('Failed to fetch feedbacks');
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
             
             const feedbacks = await response.json();
             const feedbackListElement = this.feedbackList.querySelector('ul');
             feedbackListElement.innerHTML = '';
 
-            feedbacks.forEach(feedback => {
-                const li = document.createElement('li');
-                li.innerHTML = `
-                    <strong>${feedback.username}</strong> - ${feedback.rating} stars<br>
-                    ${feedback.review}<br>
-                    <small>${new Date(feedback.date).toLocaleDateString()}</small>
-                `;
-                feedbackListElement.appendChild(li);
-            });
+            if (Array.isArray(feedbacks) && feedbacks.length > 0) {
+                feedbacks.forEach(feedback => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <strong>${feedback.username}</strong> - ${feedback.rating} stars<br>
+                        ${feedback.review}<br>
+                        <small>${new Date(feedback.date).toLocaleDateString()}</small>
+                    `;
+                    feedbackListElement.appendChild(li);
+                });
+            } else {
+                feedbackListElement.innerHTML = '<li>No feedbacks yet. Be the first to share your thoughts!</li>';
+            }
         } catch (error) {
             console.error('Error fetching feedbacks:', error);
             const feedbackListElement = this.feedbackList.querySelector('ul');
-            feedbackListElement.innerHTML = '<li>Failed to load feedbacks. Please try again later.</li>';
+            feedbackListElement.innerHTML = '<li>Failed to load feedbacks. Please make sure the server is running at http://localhost:5000</li>';
         }
     }
 
